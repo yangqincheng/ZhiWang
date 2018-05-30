@@ -38,11 +38,13 @@ class AuthorUrlSpider(Spider):
         print("______",author_urls,"______")
         if len(author_urls)!=len(author_names):
             print('Error: len(author_urls)!=len(author_names)')
+        # 检查作者个数是否与作者url个数相等
         count=0
         while count<len(author_names):
             item=ZhiwangspiderItem()
             item['author_url']=author_urls[count]
             item['author_name']=author_names[count]
+            # 因为一个文章可能有多个作者，那么就需要遍历每一个作者的名字和url
             yield item
             count+=1
 

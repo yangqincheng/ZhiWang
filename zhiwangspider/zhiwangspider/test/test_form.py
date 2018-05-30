@@ -1,8 +1,8 @@
 import requests
 
 payload = {
-    'code': '10155907',
-    'infotype': '1'
+    'code': '10155907', #作者code
+    'infotype': '1'   #导航栏类型
 }
 
 headers = {
