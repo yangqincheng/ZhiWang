@@ -3,7 +3,7 @@ from PIL import Image
 from selenium import webdriver
 import re
 from zhiwangspider.settings import dict_cookies
-
+import time
 def checkCode(img_path='check_code.png'):
     '''
     调用接口请求验证码，保存到本地，识别验证，检查识别的验证码对不对。
@@ -50,31 +50,39 @@ def try_checkCode(driver,box):
     region.save("check_code.png")
 
     check_code = checkCode()
-    check_code = re.sub('\W','',check_code)
+    check_code = re.sub('\W','',check_code) #[^a-zA-Z0-0]
 
     driver.find_element_by_xpath('//input[@id="CheckCode"]').send_keys(check_code) #输入验证码
     #通过submit()或者click() 来操作
     driver.find_element_by_xpath('/html/body/p[1]/input[2]').click()# 点击提交按钮
+    time.sleep(0.5)# 需sleep，等待加载
     #/html/body/text()
     print(driver.find_element_by_xpath('/html/body').text)
     if '错误' in driver.find_element_by_xpath('/html/body').text:
         print('验证码错误，程序重试！')
         driver.find_element_by_xpath('//input[@id="CheckCode"]').click()  # 输入验证码
         box = (751, 124, 846, 159)
+        time.sleep(0.5) #等待页面加载
         return try_checkCode(driver,box)
     else:
         print("____",driver.current_url)
         # driver.quit()
         return driver.current_url
-# print(try_checkCode())
-# checkCode('check_code.png')
+
 def return_link(url):
     driver = webdriver.Chrome('chromedriver')
     driver.get(url)
-    for name,value in dict_cookies.items():
+    for name,value in dict_cookies.items(): #增加cookie
         driver.add_cookie({'name':name,'value':value})
     box = (751, 71, 846, 103) #无错误时验证码的位置,left, top, right, bottom
     return try_checkCode(driver,box)
 
 
-# return_link()
+def click_fifty(url):
+    driver = webdriver.Chrome('chromedriver')
+    driver.get(url)
+    for name, value in dict_cookies.items():
+        driver.add_cookie({'name': name, 'value': value})
+    driver.find_element_by_xpath('//*[@id="id_grid_display_num"]/a[3]/font').click()# 点击提交按钮
+    return driver.current_url
+
