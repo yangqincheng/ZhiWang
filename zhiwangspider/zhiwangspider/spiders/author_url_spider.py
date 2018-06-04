@@ -2,16 +2,18 @@ from scrapy import Spider
 from zhiwangspider.items import ZhiwangspiderItem
 from scrapy import Request
 from scrapy.selector import Selector
-from zhiwangspider.transCookies import stringToDict
 import urllib.parse
 import time
-
+from zhiwangspider.chrome_simulate import return_link,click_fifty
+from zhiwangspider.settings import dict_cookies
 from urllib.parse import unquote #解码url
 
 class AuthorUrlSpider(Spider):
     name='au'
 
     cnki_articles_root_url='http://kns.cnki.net/kns/brief/brief.aspx' #知网的根url
+    # cnki_articles_root_url='http://cnki.cn-ki.net/kns/brief/result.aspx' #知网的镜像url
+
 
     params =  {
     'PageName': 'ASP.brief_result_aspx',
@@ -24,17 +26,26 @@ class AuthorUrlSpider(Spider):
     'S': '1'
     }
 
-    cookies="Ecp_notFirstLogin=AjlAZ1; Ecp_ClientId=5180512111401484195; cnkiUserKey=fff06d5a-f3ef-b430-2c06-87f65a20145d; RsPerPage=20; UM_distinctid=1635262bfbe1e9-07df346658c1b2-3961430f-e1000-1635262bfbf69e; CNZZDATA3258975=cnzz_eid%3D2068027915-1526090497-null%26ntime%3D1527070181; _pk_ref=%5B%22%22%2C%22%22%2C1527590884%2C%22https%3A%2F%2Fcn.bing.com%2F%22%5D; _pk_id=e96ada05-9ddc-493b-876b-8154ca9c4789.1526095593.22.1527595071.1527590884.; ASP.NET_SessionId=vvyodmv0n0dpdf2thwk04q4g; LID=WEEvREcwSlJHSldRa1FhdXNXa0hIb2hqMDBJY2twTmFQanJDTk9qYW40MD0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!; SID_kns=123111; c_m_LinID=LinID=WEEvREcwSlJHSldRa1FhdXNXa0hIb2hqMDBJY2twTmFQanJDTk9qYW40MD0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&ot=05/30/2018 00:08:53; c_m_expire=2018-05-30 00:08:53; SID_klogin=125144; Ecp_session=1; Ecp_LoginStuts=%7B%22IsAutoLogin%22%3Afalse%2C%22UserName%22%3A%22xn0116%22%2C%22ShowName%22%3A%22%25E7%2594%25B5%25E5%25AD%2590%25E7%25A7%2591%25E6%258A%2580%25E5%25A4%25A7%25E5%25AD%25A6%22%2C%22UserType%22%3A%22bk%22%2C%22r%22%3A%22AjlAZ1%22%7D"
-
     def start_requests(self):
-        url = 'http://kns.cnki.net/kns/brief/brief.aspx?'+urllib.parse.urlencode(self.params)
+        url = self.cnki_articles_root_url+'?'+urllib.parse.urlencode(self.params)
+
+        # 点击50按钮，使每页的文章数增加
+        # url50 = click_fifty(url)
+
         # 为了给Request添加params
-        yield Request(url,encoding='utf-8',cookies=stringToDict(self.cookies),callback=self.parse)
+        yield Request(url,encoding='utf-8',cookies=dict_cookies,callback=self.parse)
 
 
     def parse(self, response):
+        if 'vericode.aspx'in response.url: #如果当前页面需要验证码
+            url = return_link(response.url) #调用验证码模块，返回正确的链接
+            print(url,' !!!!!!!!!!!!!')
+            yield Request(url, encoding='utf-8', cookies=dict_cookies, callback=self.parse,dont_filter=True)
+            # 这里需要设置不查重url，因为虽然之前curpage=17已经parse过，但没有保存信息
+            return -1# 此时应当直接退出parse函数
         sel = Selector(response)
-        time.sleep(1)
+
+        # time.sleep(1)
         author_names = sel.xpath("//td[@class='author_flag']/a/text()").extract()  # 注意：选取xpath时应该跳过tbody，否则会出错
         author_urls = sel.xpath("//td[@class='author_flag']/a/@href").extract()
         print("______", author_urls, "______")
@@ -52,12 +63,13 @@ class AuthorUrlSpider(Spider):
             next_page_url=unquote(sel.xpath("(//div[@class='TitleLeftCell']/a)[last()]/@href").extract()[0]) #取页面选取栏中最后一项“下一页”
             print("***",next_page_url)
             # 需注意对url解码，避免=变成乱码影响爬取
-            yield Request(self.cnki_articles_root_url+ next_page_url,encoding='utf-8', cookies = stringToDict(self.cookies),callback=self.parse)
+            time.sleep(0.7)
+            yield Request(self.cnki_articles_root_url+ next_page_url,encoding='utf-8', cookies = dict_cookies,callback=self.parse)
 
         except:
             print("Error: 爬取下一页面的链接发生异常:")
             print("该页面的源代码如下：")
-            print(response.text)
+            print("***",response.text,"***")
 
 
 
