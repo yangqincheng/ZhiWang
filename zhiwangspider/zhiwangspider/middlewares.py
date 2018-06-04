@@ -6,7 +6,13 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from selenium import webdriver
+from scrapy.http import HtmlResponse
+from selenium.webdriver.chrome.options import Options
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class ZhiwangspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -78,7 +84,31 @@ class ZhiwangspiderDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        if spider.name == "author_content":
+            print( "chrome driver is starting...")
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--disable-gpu')
+            driver = webdriver.Chrome(chrome_options=chrome_options)
+            # driver = webdriver.Chrome # 指定使用的浏览器
+            #  driver = webdriver.Firefox()
+            # driver.get(request.url)
+            # time.sleep(1)
+            # try:
+            #     element = WebDriverWait(driver, 10).until(
+            #         EC.presence_of_element_located((By.ID, "myDynamicElement"))
+            #     )
+            # finally:
+            #     driver.quit()
+            js = "var q=document.documentElement.scrollTop=10000"
+            driver.execute_script(js)  # 可执行js，模仿用户操作。此处为将页面拉至最底端。
+            time.sleep(50)
+            body = driver.page_source
+            print("访问" + request.url)
+            return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
+        else:
+            return
+
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
