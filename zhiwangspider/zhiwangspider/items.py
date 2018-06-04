@@ -15,3 +15,7 @@ class ZhiwangspiderItem(scrapy.Item):
     author_name=scrapy.Field()
     article_name=scrapy.Field()
     pass
+
+class AuthorItem(scrapy.Item):
+
+    keyword =scrapy.Field()
