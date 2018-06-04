@@ -1,5 +1,5 @@
 import requests
-
+from lxml import etree
 # r = requests.get('http://kns.cnki.net/kns/brief/brief.aspx')
 #
 # print(r.status_code)
@@ -57,6 +57,7 @@ headers = { 'Host': 'kns.cnki.net',
 
 url ='http://kns.cnki.net/kns/brief/brief.aspx'
 
-r = requests.get(url, headers=headers, params=payload)
-
-print(r.text)
+html = requests.get(url, headers=headers, params=payload).text
+selector=etree.HTML(html)
+head=selector.xpath('//head')
+print(head)

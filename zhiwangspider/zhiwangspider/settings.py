@@ -8,12 +8,18 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+from zhiwangspider.transCookies import stringToDict
 
 BOT_NAME = 'zhiwangspider'
 
 SPIDER_MODULES = ['zhiwangspider.spiders']
 NEWSPIDER_MODULE = 'zhiwangspider.spiders'
-FEED_EXPORT_ENCODING = 'utf-8'
+
+cookies ='Ecp_notFirstLogin=y8LPES; Ecp_ClientId=5180512111401484195; cnkiUserKey=fff06d5a-f3ef-b430-2c06-87f65a20145d; RsPerPage=20; UM_distinctid=1635262bfbe1e9-07df346658c1b2-3961430f-e1000-1635262bfbf69e; CNZZDATA3258975=cnzz_eid%3D2068027915-1526090497-null%26ntime%3D1527070181; _pk_ref=%5B%22%22%2C%22%22%2C1528033371%2C%22https%3A%2F%2Fcn.bing.com%2F%22%5D; _pk_id=e96ada05-9ddc-493b-876b-8154ca9c4789.1526095593.29.1528035478.1528033371.; ASP.NET_SessionId=1wkyvyvvfw5ehzyh4105wmg4; LID=WEEvREcwSlJHSldRa1Fhb09jSnZqem53VkQ5b3Zoc3craXZKR3A4KzhMaz0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!; SID_kns=123124; Ecp_session=1; SID_klogin=125143; Ecp_LoginStuts=%7B%22IsAutoLogin%22%3Afalse%2C%22UserName%22%3A%22xn0116%22%2C%22ShowName%22%3A%22%25E7%2594%25B5%25E5%25AD%2590%25E7%25A7%2591%25E6%258A%2580%25E5%25A4%25A7%25E5%25AD%25A6%22%2C%22UserType%22%3A%22bk%22%2C%22r%22%3A%22y8LPES%22%7D; c_m_LinID=LinID=WEEvREcwSlJHSldRa1Fhb09jSnZqem53VkQ5b3Zoc3craXZKR3A4KzhMaz0=$9A4hF_YAuvQ5obgVAqNKPCYcEjKensW4ggI8Fm4gTkoUKaID8j8gFw!!&ot=06/03/2018 23:50:05; c_m_expire=2018-06-03 23:50:05'
+
+
+
+dict_cookies = stringToDict(cookies)
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhiwangspider (+http://www.yourdomain.com)'
