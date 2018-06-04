@@ -1,9 +1,9 @@
 import requests
 
-payload = {
-    'code': '10155907', #作者code
-    'infotype': '1'   #导航栏类型
-}
+# payload = {
+#     'code': '10155907', #作者code
+#     'infotype': '1'   #导航栏类型
+# }
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -17,8 +17,9 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36'
 }
 
-url = 'http://kns.cnki.net/kcms/detail/frame/knetlist.aspx'
+url = 'http://kns.cnki.net/kcms/detail/knetsearch.aspx?sfield=au&skey=%E6%9D%8E%E5%B0%8F%E7%8E%B2&code=10155907'
 
-r = requests.get(url,headers=headers,params=payload)
+# r = requests.get(url,headers=headers,params=payload)
 
+r = requests.get(url,headers=headers)
 print(r.text)
