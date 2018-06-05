@@ -13,7 +13,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.common.action_chains import ActionChains
 class ZhiwangspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -90,19 +90,35 @@ class ZhiwangspiderDownloaderMiddleware(object):
             chrome_options.add_argument('--headless')
             chrome_options.add_argument('--disable-gpu')
             driver = webdriver.Chrome(chrome_options=chrome_options)
-            # driver = webdriver.Chrome # 指定使用的浏览器
+
             #  driver = webdriver.Firefox()
-            # driver.get(request.url)
-            # time.sleep(1)
+            driver.get(request.url)
+
+            element1 = driver.find_element_by_xpath("//dt[@id='lcatalog_AUKEYWORDS']")
+            # 找到需要点击的按钮，这个按钮是作者关注领域
+            # element1 = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgby']")
+            element1.click()
+            # 进行点击操作
+            # iframe=[]
+            # iframe.append(driver.find_element_by_name("frame1"))
+            # 得到异步加载的iframe，然后执行第一个iframe
+            iframe = driver.find_element_by_name("frame2")
+            # iframe.append(driver.find_element_by_name("framecatalog_1"))
+
+
+            driver.switch_to.frame(iframe)
+            # driver.switch_to.frame(iframe[1])
+            # driver.switch_to.frame(iframe[2])
+
             # try:
-            #     element = WebDriverWait(driver, 10).until(
-            #         EC.presence_of_element_located((By.ID, "myDynamicElement"))
+            #     element = WebDriverWait(driver, 20).until(
+            #         EC.presence_of_element_located((By.XPATH, '/html/body/div/ul/li[18]'))
             #     )
             # finally:
             #     driver.quit()
-            js = "var q=document.documentElement.scrollTop=10000"
-            driver.execute_script(js)  # 可执行js，模仿用户操作。此处为将页面拉至最底端。
-            time.sleep(50)
+            # js = "var q=document.documentElement.scrollTop=10000"
+            # driver.execute_script(js)  # 可执行js，模仿用户操作。此处为将页面拉至最底端。
+            time.sleep(10)
             body = driver.page_source
             print("访问" + request.url)
             return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
