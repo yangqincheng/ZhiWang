@@ -93,32 +93,98 @@ class ZhiwangspiderDownloaderMiddleware(object):
 
             #  driver = webdriver.Firefox()
             driver.get(request.url)
-
-            element1 = driver.find_element_by_xpath("//dt[@id='lcatalog_AUKEYWORDS']")
+            elements = []
+            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AUKEYWORDS']")
             # 找到需要点击的按钮，这个按钮是作者关注领域
-            # element1 = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgby']")
-            element1.click()
-            # 进行点击操作
-            # iframe=[]
-            # iframe.append(driver.find_element_by_name("frame1"))
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgby']")
+            elements.append(a)
+            # 最高被引
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgxz']")
+            elements.append(a)
+            # 最高下载
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_1']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Wwjd']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_4']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_3']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_2']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Cckf']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuTUs']")
+            elements.append(a)
+
+            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuCos']")
+            elements.append(a)
+
+            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuFunds']")
+            # elements.append(a)
+
+            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuSTs']")
+            # elements.append(a)
+
+            i = 0
+
+            for element in elements:
+                element.click()
+                i =i + 1
+                print(i)
+                time.sleep(1)
+               # driver.refresh()
+               # i = i + 1
+               # if i == 3:
+               #     time.sleep(2)
+
+
+               # print("1")
+               # driver.refresh()
+               #  time.sleep(2)
+               #  进行点击操作
+
+            print("开始定位iframe")
+            # 定位每个iframe
+            iframes = []
+            iframes.append(driver.find_element_by_name("frame1"))
             # 得到异步加载的iframe，然后执行第一个iframe
-            iframe = driver.find_element_by_name("frame2")
-            # iframe.append(driver.find_element_by_name("framecatalog_1"))
+            iframes.append(driver.find_element_by_name("framecatalog_Wwjd"))
+            iframes.append(driver.find_element_by_name("framecatalog_1"))
+            iframes.append(driver.find_element_by_name("frame2"))
+            iframes.append(driver.find_element_by_name("framecatalog_4"))
+            iframes.append(driver.find_element_by_name("framecatalog_3"))
+            iframes.append(driver.find_element_by_name("framecatalog_2"))
+            iframes.append(driver.find_element_by_name("framecatalog_Cckf"))
+            iframes.append(driver.find_element_by_name("framecatalog_AuTUs"))
+            iframes.append(driver.find_element_by_name("framecatalog_AuCos"))
+            # iframes.append(driver.find_element_by_name("framecatalog_AuFunds"))
+            # iframes.append(driver.find_element_by_name("framecatalog_AuSTs"))
 
-
-            driver.switch_to.frame(iframe)
-            # driver.switch_to.frame(iframe[1])
+            # for iframe in iframes:
+            #     driver.switch_to.frame(iframe)
+            driver.switch_to.frame(iframes[7])
+            # driver.switch_to.frame(iframes[8])
             # driver.switch_to.frame(iframe[2])
 
             # try:
             #     element = WebDriverWait(driver, 20).until(
-            #         EC.presence_of_element_located((By.XPATH, '/html/body/div/ul/li[18]'))
+            #         EC.presence_of_element_located((By.XPATH, '//*[@id="lcatalog_AuSTs"]'))
             #     )
             # finally:
             #     driver.quit()
-            # js = "var q=document.documentElement.scrollTop=10000"
-            # driver.execute_script(js)  # 可执行js，模仿用户操作。此处为将页面拉至最底端。
-            time.sleep(10)
+
+            time.sleep(2)
             body = driver.page_source
             print("访问" + request.url)
             return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
