@@ -14,4 +14,6 @@ class authorspider(scrapy.Spider):
         print(response.encoding)
         body_data = response.body.decode('utf-8', 'ignore').replace(u'\xa0', u'')
         # 用utf-8解码就能保证输出的中文不乱码了，不能解码的字符忽略掉
+        with open('author_body.html','w',encoding='utf-8') as f:
+            f.write(body_data)
         print(body_data)
