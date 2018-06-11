@@ -87,62 +87,65 @@ class ZhiwangspiderDownloaderMiddleware(object):
         if spider.name == "author_content":
             print( "chrome driver is starting...")
             chrome_options = Options()
-            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--headless') #关闭窗口
             chrome_options.add_argument('--disable-gpu')
             driver = webdriver.Chrome(chrome_options=chrome_options)
 
             #  driver = webdriver.Firefox()
             driver.get(request.url)
-            elements = []
-            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AUKEYWORDS']")
-            # 找到需要点击的按钮，这个按钮是作者关注领域
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgby']")
-            elements.append(a)
-            # 最高被引
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgxz']")
-            elements.append(a)
-            # 最高下载
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_1']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Wwjd']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_4']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_3']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_2']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dd[@id='lcatalog_Cckf']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuTUs']")
-            elements.append(a)
-
-            a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuCos']")
-            elements.append(a)
-
-            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuFunds']")
+            nav_keys_xpath=["//dt[@id='lcatalog_AUKEYWORDS']","//dd[@id='lcatalog_Zgby']","//dd[@id='lcatalog_Zgxz']","//dd[@id='lcatalog_1']",
+                            "//dd[@id='lcatalog_Wwjd']","//dd[@id='lcatalog_4']","//dd[@id='lcatalog_3']","//dd[@id='lcatalog_2']","//dd[@id='lcatalog_Cckf']",
+                            "//dt[@id='lcatalog_AuTUs']","//dt[@id='lcatalog_AuCos']","//dt[@id='lcatalog_AuFunds']","//dt[@id='lcatalog_AuSTs']"]
+            # elements = []
+            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AUKEYWORDS']")
+            # # 找到需要点击的按钮，这个按钮是作者关注领域
             # elements.append(a)
-
-            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuSTs']")
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgby']")
             # elements.append(a)
-
-            i = 0
-
-            for element in elements:
-                element.click()
-                i =i + 1
-                print(i)
-                time.sleep(1)
+            # # 最高被引
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_Zgxz']")
+            # elements.append(a)
+            # # 最高下载
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_1']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_Wwjd']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_4']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_3']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_2']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dd[@id='lcatalog_Cckf']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuTUs']")
+            # elements.append(a)
+            #
+            # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuCos']")
+            # elements.append(a)
+            #
+            # # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuFunds']")
+            # # elements.append(a)
+            #
+            # # a = driver.find_element_by_xpath("//dt[@id='lcatalog_AuSTs']")
+            # # elements.append(a)
+            #
+            # i = 0
+            #
+            # for element in elements:
+            #     element.click()
+            #     i =i + 1
+            #     print(i)
+            #     time.sleep(1)
                # driver.refresh()
                # i = i + 1
                # if i == 3:
@@ -154,26 +157,68 @@ class ZhiwangspiderDownloaderMiddleware(object):
                #  time.sleep(2)
                #  进行点击操作
 
+            for xpath in nav_keys_xpath:# 点击导航栏
+                e=driver.find_element_by_xpath(xpath)
+                e.click()
+                time.sleep(1)
+
             print("开始定位iframe")
             # 定位每个iframe
-            iframes = []
-            iframes.append(driver.find_element_by_name("frame1"))
-            # 得到异步加载的iframe，然后执行第一个iframe
-            iframes.append(driver.find_element_by_name("framecatalog_Wwjd"))
-            iframes.append(driver.find_element_by_name("framecatalog_1"))
-            iframes.append(driver.find_element_by_name("frame2"))
-            iframes.append(driver.find_element_by_name("framecatalog_4"))
-            iframes.append(driver.find_element_by_name("framecatalog_3"))
-            iframes.append(driver.find_element_by_name("framecatalog_2"))
-            iframes.append(driver.find_element_by_name("framecatalog_Cckf"))
-            iframes.append(driver.find_element_by_name("framecatalog_AuTUs"))
-            iframes.append(driver.find_element_by_name("framecatalog_AuCos"))
-            # iframes.append(driver.find_element_by_name("framecatalog_AuFunds"))
-            # iframes.append(driver.find_element_by_name("framecatalog_AuSTs"))
+            iframe_names=["frame1","frame2","framecatalog_1","framecatalog_Wwjd","framecatalog_4","framecatalog_3","framecatalog_2",
+                          "framecatalog_Cckf","framecatalog_AuTUs","framecatalog_AuCos","framecatalog_AuFunds","framecatalog_AuSTs"]
+            # //*[@id="frame1"]
 
-            # for iframe in iframes:
-            #     driver.switch_to.frame(iframe)
-            driver.switch_to.frame(iframes[7])
+            for name in iframe_names:
+                try:
+                    # 将滚动条移动到页面的底部
+                    js = "var q=document.documentElement.scrollTop=100000"
+                    driver.execute_script(js) #执行js语句
+                    time.sleep(1)
+
+                    element = WebDriverWait(driver, 10).until(
+                        # EC.invisibility_of_element_located("//div[class='wait']")
+                        EC.presence_of_element_located((By.XPATH, '//*[@id="%s"]'%name)) #注：iframe不加载时一开始就存在，所以这个等待无意义，但尝试等待iframe其中的标题无果
+                    )
+                    # driver.switch_to.frame(element)
+                    # try:
+                    #     h2 = WebDriverWait(driver, 20).until( #尝试等待标题加载
+                    #         EC.presence_of_element_located((By.XPATH, '//*[@id="%s"]//h2' % name))
+                    #     )
+                    # except:
+                    #     h3 = WebDriverWait(driver, 20).until(
+                    #         EC.presence_of_element_located((By.XPATH, '//*[@id="%s"]//h3' % name))
+                    #     )
+
+                    # driver.switch_to.default_content()
+                    # print(element,"__________")
+                finally:
+                    # WebDriverWait(driver, 10).until(
+                    #     EC.invisibility_of_element_located("//div[class='wait']")# 尝试等待“正在加载”消失
+                    #     # EC.presence_of_element_located((By.XPATH, '//*[@id="%s"]' % name))
+                    # )
+                # element=driver.find_element_by_xpath('//*[@id="%s"]'%name)
+                    driver.switch_to.frame(element) # 切换到iframe里面
+                    driver.switch_to.default_content() # 回到主页面，这里如果不切换则不能访问其他iframe
+
+
+            # iframes = []
+            # iframes.append(driver.find_element_by_name("frame1"))
+            # # 得到异步加载的iframe，然后执行第一个iframe
+            # iframes.append(driver.find_element_by_name("framecatalog_Wwjd"))
+            # iframes.append(driver.find_element_by_name("framecatalog_1"))
+            # iframes.append(driver.find_element_by_name("frame2"))
+            # iframes.append(driver.find_element_by_name("framecatalog_4"))
+            # iframes.append(driver.find_element_by_name("framecatalog_3"))
+            # iframes.append(driver.find_element_by_name("framecatalog_2"))
+            # iframes.append(driver.find_element_by_name("framecatalog_Cckf"))
+            # iframes.append(driver.find_element_by_name("framecatalog_AuTUs"))
+            # iframes.append(driver.find_element_by_name("framecatalog_AuCos"))
+            # # iframes.append(driver.find_element_by_name("framecatalog_AuFunds"))
+            # # iframes.append(driver.find_element_by_name("framecatalog_AuSTs"))
+            #
+            # # for iframe in iframes:
+            # #     driver.switch_to.frame(iframe)
+            # driver.switch_to.frame(iframes[7])
             # driver.switch_to.frame(iframes[8])
             # driver.switch_to.frame(iframe[2])
 
